@@ -1,0 +1,146 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <script type="text/javascript" src="../script/aui-toast.js"></script>
+    <script type="text/javascript" src="../script/aui-dialog.js" ></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script src="../script/jquery-3.2.1.min.js"></script>
+    <style type="text/css">
+        #number {
+          text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+  <div class="aui-tips aui-margin-b-15" id="tips-1">
+      <i class="aui-iconfont aui-icon-info"></i>
+      <div class="aui-tips-title">下拉更新数据</div>
+      <i class="aui-iconfont aui-icon-close" tapmode onclick="closeTips()"></i>
+  </div>
+  <section class="aui-content-padded middlem">
+    <div class="aui-card-list">
+        <div class="aui-card-list-header">
+            错误提示
+        </div>
+        <div class="aui-card-list-content-padded">
+            您暂时还未获得管理权限 请刷新后重试
+        </div>
+        <div class="aui-card-list-footer">
+            DBV Developer : HaroldX
+    </div>
+ </section>
+</body>
+
+<script type="text/javascript">
+    var id = 0;
+    var dialog = new auiDialog({});
+    var username = "Undefined";
+    var permission = 0;
+    function closeTips(){
+        $api.remove($api.byId("tips-1"));
+      }
+    apiready = function() {
+        api.showProgress({
+         title: '身份校验中',
+         text: '正在校验',
+         modal: false
+        });
+        api.parseTapmode();
+        id = api.deviceId;
+        getid();
+        api.hideProgress();
+        api.setRefreshHeaderInfo({
+          bgColor: '#03a9f4',
+          textColor: '#fff',
+          textDown: '下拉刷新...',
+          textUp: '松开刷新...'
+        }, function(ret, err) {
+          window.location.replace("./authority.html");
+          api.refreshHeaderLoadDone();
+        });
+        if (permission == 0 || username == null) {
+          return 1;
+        }
+        if (permission != 0) {
+          api.showProgress({
+           title: '数据切换中',
+           text: '正在校验',
+           modal: false
+          });
+          window.location.replace("./manage.html");
+        }
+    }
+
+    function getid() {
+        $.ajax({
+            url: "https://api.littlebear.fun/SG/getid.php",
+            async: false,
+            type: "POST",
+            data: {
+                "deviceid": id
+            },
+            success: function(data) {
+                username = JSON.parse(data).GameID;
+                groupid = JSON.parse(data).GroupID;
+                fix = JSON.parse(data).Fix;
+                war = JSON.parse(data).War;
+                permission = JSON.parse(data).stat;
+                if (groupid == 'EVE' ){
+                  alert('请点击隶属军团更改您的用户绑定');
+                }
+                if (username == null) {
+                  alert('请尽快完成用户名绑定');
+                }
+            }
+        })
+    }
+
+
+    function changeid(name){
+      $.ajax({
+        url:"https://api.littlebear.fun/SG/changeid.php",
+        async: false,
+        type: "POST",
+        data:{
+          "GameID":name,
+          "deviceid":id
+        },
+        success: function(data){
+          if(JSON.parse(data).status=="ready"){
+            window.location.replace("./authority.html");
+          }
+          if(JSON.parse(data).status!="ready"){
+            alert("API Upload 失败 请联系管理员");
+          }
+        }
+      })
+    }
+
+
+    function alertid(){
+      dialog.prompt({
+        title:"用户绑定",
+        text:"请输入您的昵称",
+        buttons:['刷新','确定']
+      },function(ret){
+        if (ret.buttonIndex == 2) {
+          if (ret.text == ""){
+            alert("请输入有效用户名");
+            alertid();
+          }else {
+            alert(ret.text);
+            changeid(ret.text);
+          }
+        }
+        if (ret.buttonIndex == 1){
+            window.location.replace("./authority.html");
+        }
+      })
+    }
+</script>

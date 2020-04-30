@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>My Account</title>
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../css/aui-pull-refresh.css" />
+    <style type="text/css">
+        .text-white {
+            color: #ffffff !important;
+        }
+
+        .aui-grid [class*=aui-col-] {
+            padding: 0.75rem 0;
+        }
+
+        control-1 {
+            margin: 0px;
+        }
+        .ui-dialog {
+            padding: 20px;
+              *zoom:1;
+              _float: left;
+              position: relative;
+              background-color: #FFF;
+              border: 1px solid #999;
+              outline: 0;
+              background-clip: padding-box;
+              font-family: Helvetica, arial, sans-serif;
+              font-size: 14px;
+              line-height: 1.428571429;
+              color: #333;
+              opacity: 0;
+              -webkit-transform: scale(0);
+              transform: scale(0);
+              -webkit-transition: -webkit-transform .15s ease-in-out, opacity .15s ease-in-out;
+              transition: transform .15s ease-in-out, opacity .15s ease-in-out;
+      }
+    </style>
+
+</head>
+
+<body>
+    <section class="aui-content" id="user-info">
+      <div class="aui-tips aui-margin-b-15" id="tips-1">
+          <i class="aui-iconfont aui-icon-info"></i>
+          <div class="aui-tips-title">下拉刷新更新数据</div>
+          <i class="aui-iconfont aui-icon-close" tapmode onclick="closeTips()"></i>
+      </div>
+        <div class="aui-list aui-media-list aui-list-noborder aui-bg-info" tapmode onclick="alertid()">
+            <div class="aui-list-item aui-list-item-middle aui-bg-success">
+                <div class="aui-media-list-item-inner ">
+                    <div class="aui-list-item-media" style="width:3rem;">
+                        <img src="../image/dbv.jpg" class="aui-img-round">
+                    </div>
+                    <div class="aui-list-item-inner aui-list-item-arrow">
+                        <div class="aui-list-item-text text-white aui-font-size-18" id=username>NewBie</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <p></p>
+    <p></p>
+    <p></p>
+    <p></p>
+
+    <section class="aui-content aui-grid aui-margin-b-15" id = "person">
+        <div class="aui-row">
+            <div class="aui-col-xs-4 aui-border-r">
+                <big class="aui-text-success" id=Fix><small>0</small></big>
+                <div class="aui-gird-table aui-font-size-12">军团补损次数</div>
+            </div>
+            <div class="aui-col-xs-4 aui-border-r">
+                <big class="aui-text-indigo" id=groupid>EVE<small></small></big>
+                <div class="aui-grid-table aui-font-size-12">隶属军团</div>
+            </div>
+            <div class="aui-col-xs-4">
+                <big class="aui-text-pink" id=War>0<small></small></big>
+                <div class="aui-grid-table aui-font-size-12">参团次数</div>
+            </div>
+            <div class="aui-col-xs-4 aui-border-r">
+                <big class="aui-text-warning" id=Rebuild>0<small></small></big>
+                <div class="aui-grid-table aui-font-size-12">待批准补损</div>
+            </div>
+            <div class="aui-col-xs-4 aui-border-r">
+                <big class="aui-text-info" id=Transfer>None<small></small></big>
+                <div class="aui-grid-table aui-font-size-12">军团转移</div>
+            </div>
+            <div class="aui-col-xs-4">
+                <big class="aui-text-pink" id=Date>0<small></small></big>
+                <div class="aui-grid-table aui-font-size-12">绑定天数</div>
+            </div>
+        </div>
+    </section>
+    <section class="aui-content">
+         <ul class="aui-list aui-list-in aui-margin-b-15">
+             <li class="aui-list-item">
+                 <div class="aui-list-item-label-icon">
+                     <i class="aui-iconfont aui-icon-right aui-text-info"></i>
+                 </div>
+                 <div class="aui-list-item-inner aui-list-item-arrow" tapmode onclick="popup1()" >
+                     <div class="aui-list-item-title">军团转移申请</div>
+                 </div>
+             </li>
+             <li class="aui-list-item">
+                 <div class="aui-list-item-label-icon">
+                     <i class="aui-iconfont aui-icon-right aui-text-danger"></i>
+                 </div>
+                 <div class="aui-list-item-inner aui-list-item-arrow" tapmode onclick="Rebuild2()">
+                     <div class="aui-list-item-title">军团补损申请</div>
+                 </div>
+             </li>
+             <li class="aui-list-item">
+                 <div class="aui-list-item-label-icon">
+                     <i class="aui-iconfont aui-icon-right aui-text-warning"></i>
+                 </div>
+                 <div class="aui-list-item-inner aui-list-item-arrow" tapmode onclick="alert('暂未开放')">
+                     <div class="aui-list-item-title">军团范围</div>
+                 </div>
+             </li>
+         </ul>
+  </section>
+
+
+  <section class="aui-content">
+      <ul class="aui-list aui-list-in aui-margin-b-15">
+        <li class="aui-list-item">
+            <div class="aui-list-item-label-icon">
+                <i class="aui-iconfont aui-icon-calendar aui-text-danger"></i>
+            </div>
+            <div class="aui-list-item-inner aui-list-item-arrow" tapmode onclick="about()">
+                <div class="aui-list-item-title">时间轴</div>
+            </div>
+        </li>
+      </ul>
+ </section>
+</body>
+
+<script type="text/html" id="temp">
+  <div class="aui-popup" style="position: absolute; background-color: black; border-radius: 10px; top: 50%; left: 50%;" id="popup1">
+    <div class="aui-popup-content">
+      <ul class="aui-list aui-list-noborder">
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-warning"></i>
+              </div>
+              <div class="aui-list-item-inner aui-list-item-middle" id = 'DBVA'>
+                  DBVA
+              </div>
+          </li>
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-info"></i>
+              </div>
+              <div class="aui-list-item-inner" id = 'DBVB'>
+                  DBVB
+              </div>
+          </li>
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-danger"></i>
+              </div>
+              <div class="aui-list-item-inner" id = 'DBVC'>
+                  DBVC
+              </div>
+          </li>
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-success"></i>
+              </div>
+              <div class="aui-list-item-inner" id = 'DBV'>
+                  DBV
+              </div>
+          </li>
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-indigo"></i>
+              </div>
+              <div class="aui-list-item-inner" id = 'ABD'>
+                  ABD
+              </div>
+          </li>
+          <li class="aui-list-item" tapmode onclick="changegroup(this)">
+              <div class="aui-list-item-label-icon">
+                  <i class="aui-iconfont aui-icon-right aui-text-indigo"></i>
+              </div>
+              <div class="aui-list-item-inner" id = 'ADB'>
+                  ADB
+              </div>
+          </li>
+      </ul>
+  </div>
+</div>
+</script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/aui-dialog.js" ></script>
+<script src="../script/aui-pull-refresh.js"></script>
+<script src="../script/aui-popup.js"></script>
+<script src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    var dialog = new auiDialog({});
+    var username = "Undefined";
+    var groupid = 0;
+    var id = 0;
+    var fix = 0;
+    var war = 0;
+    var Rdate = 0;
+    var Transfer = 0;
+    var Rebuild = 0;
+    var popup = new auiPopup();
+
+    apiready = function() {
+        api.showProgress({
+         title: '身份校验中',
+         text: '正在校验',
+         modal: false
+        });
+        api.parseTapmode();
+        id = api.deviceId;
+        getid();
+        if (username == "Undefined") {
+          //alertid();
+        }
+        $api.text($api.byId('username'), username);
+        $api.text($api.byId('groupid'),groupid);
+        $api.text($api.byId('War'),war);
+        $api.text($api.byId('Fix'),war*2-fix);
+        $api.text($api.byId('Date'),RDate);
+        $api.text($api.byId('Transfer'),Transfer);
+        $api.text($api.byId('Rebuild'),Rebuild);
+        api.hideProgress();
+        api.setRefreshHeaderInfo({
+          bgColor: '#03a9f4',
+          textColor: '#fff',
+          textDown: '下拉刷新...',
+          textUp: '松开刷新...'
+        }, function(ret, err) {
+          window.location.replace("./my.html");
+          api.refreshHeaderLoadDone();
+        });
+
+    }
+
+    function popup1(){
+      var strVar=$("#temp").html(); //克隆元素,注意不是javascript的cloneNode()
+      $("#person").append(strVar);
+      var $popup = $('#popup1');
+      $popup.css({marginLeft: $popup.width() / 2 * -1 + 'px', marginTop: $popup.height() / 2 * -1 + 'px' ,});
+      popup.show(document.getElementById("popup1"));
+    }
+
+    function closeTips(){
+    		$api.remove($api.byId("tips-1"));
+    	}
+
+    function about(){
+        window.location.replace("./timeline.html");
+    }
+
+    function Rebuild2(){
+      alert('功能暂未开放');
+      return 0;
+      var dialog3 = new auiDialog({})
+      dialog3.prompt({
+        title:"军团补损",
+        text:"请输入补损数量",
+        buttons:['刷新','确定']
+      },function(ret2){
+        if (ret2.buttonIndex == 2) {
+          if (ret2.text == ""){
+            alert("请输入有效值");
+            Rebuild2();
+          }else {
+            var Rebuild = ret2.text;
+            $.ajax({
+              url:"https://api.littlebear.fun/SG/changeid.php",
+              async: false,
+              type: "GET",
+              data:{
+                "Rebuild":Rebuild,
+                "deviceid":id
+              },
+              success: function(data){
+                if(JSON.parse(data).status=="ready"){
+                  window.location.replace("./my.html");
+                }
+                if(JSON.parse(data).status!="ready"){
+                  alert("API Upload 失败 请联系管理员");
+                }
+              }
+            })
+          }
+        } else {
+          window.location.replace("./my.html");
+        }
+      })
+    }
+
+    function alertid(){
+      dialog.prompt({
+        title:"用户绑定",
+        text:"请输入您的昵称",
+        buttons:['刷新','确定']
+      },function(ret){
+        if (ret.buttonIndex == 2) {
+          if (ret.text == ""){
+            alert("请输入有效用户名");
+            alertid();
+          }else {
+            changeid(ret.text);
+          }
+        }
+        if (ret.buttonIndex == 1){
+            window.location.replace("./my.html");
+        }
+      })
+    }
+
+    function changegroup(htmldom){
+      var dom = $(htmldom);
+      var text = dom.children().last().text().trim();
+      if (groupid == 'EVE'){
+      $.ajax({
+        url:"https://api.littlebear.fun/SG/changeid.php",
+        async: false,
+        type: "POST",
+        data:{
+          "GroupID":text,
+          "deviceid":id
+        },
+        success: function(data){
+          if(JSON.parse(data).status=="ready"){
+            window.location.replace("./my.html");
+          }
+          if(JSON.parse(data).status!="ready"){
+            alert("API Upload 失败 请联系管理员");
+          }
+        }
+      })
+      $('#popup1').remove();
+      return 0;
+    }else{
+      $.ajax({
+        url:"https://api.littlebear.fun/SG/changeid.php",
+        async: false,
+        type: "POST",
+        data:{
+        "Transfer":text,
+        "deviceid":id
+      },
+      success: function(data){
+        if(JSON.parse(data).status=="ready"){
+            window.location.replace("./my.html");
+          }
+        if(JSON.parse(data).status!="ready"){
+            alert("API Upload 失败 请联系管理员");
+          //window.location.replace("http://api.haroldx.me");
+          }
+        }
+      })
+    }
+    $('#popup1').remove();
+    return 0;
+  }
+
+    function changeid(name){
+      $.ajax({
+        url:"https://api.littlebear.fun/SG/changeid.php",
+        async: false,
+        type: "POST",
+        data:{
+          "GameID":name,
+          "deviceid":id
+        },
+        success: function(data){
+          if(JSON.parse(data).status=="ready"){
+            window.location.replace("./my.html");
+          }
+          if(JSON.parse(data).status!="ready"){
+            alert("API Upload 失败 请联系管理员");
+          }
+        }
+      })
+    }
+
+
+
+    function getid() {
+        $.ajax({
+            url: "https://api.littlebear.fun/SG/getid.php",
+            async: false,
+            type: "POST",
+            data: {
+                "deviceid": id
+            },
+            success: function(data) {
+                username = JSON.parse(data).GameID;
+                groupid = JSON.parse(data).GroupID;
+                fix = JSON.parse(data).Fix;
+                war = JSON.parse(data).War;
+                RDate = JSON.parse(data).Date;
+                Transfer = JSON.parse(data).Transfer;
+                Rebuild = JSON.parse(data).Rebuild;
+                if (groupid == 'EVE' ){
+                  alert('请点击隶属军团更改您的用户绑定');
+                  alert('军团绑定仅有一次机会，请谨慎选择');
+                  popup1();
+                }
+                if (username == null) {
+                  alert('请尽快完成用户名绑定');
+                  alertid();
+                }
+            }
+        })
+    }
+
+
+    function about(){
+      window.location.replace("./timeline.html")
+    }
+
+</script>
+</html>

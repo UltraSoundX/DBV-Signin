@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <script type="text/javascript" src="../script/aui-toast.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script src="../script/jquery-3.2.1.min.js"></script>
+    <style type="text/css">
+        .header {
+            padding: 2.5rem 0.5rem 2rem 0.5rem;
+        }
+
+        #demo {
+            width: 4rem;
+            height: 4rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -2rem;
+            margin-top: -2rem;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            line-height: 4rem;
+            text-align: center;
+            color: #212121;
+            font-size: 1.2rem;
+        }
+
+        #demo1 {}
+    </style>
+</head>
+
+<body>
+ <section class="aui-content" id = "message">
+  <div class="aui-card-list" id='index'>
+  </div>
+</section>
+</body>
+
+<script type="text/html" id="noticetemp">
+  <div class="aui-info aui-margin-t-10 aui-padded-l-10 aui-padded-r-10">
+    <div class="aui-info-item">
+        <img src="../image/demo1.png" style="width:1.5rem" class="aui-img-round" /><span class="aui-margin-l-5">Notice|公告：</span>
+        </div>
+    <div class="aui-info-item" id='notice'>{{notice}}</div>
+  </div>
+</script>
+
+<script type="text/html" id="temp">
+
+   <div class="aui-card-list">
+    <div class="aui-card-list-header aui-card-list-user aui-border-b"tapmode onclick="deletemessage(this)">
+        <div class="aui-card-list-user-avatar">
+            <img src="../image/dbv.jpg" class="aui-img-round" />
+        </div>
+        <div class="aui-card-list-user-name">
+            <div>DBV Test</div>
+            <small id='date'>{{date}}</small>
+        </div>
+        <div class="aui-card-list-user-info" id='groupid'>执行军团：{{groupid}}</div>
+    </div>
+    <div class="aui-card-list-content-padded" id="messagebox">
+      {{messagebox}}
+    </div>
+   </div>
+
+</script>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/aui-dialog.js" ></script>
+<script src="../script/aui-pull-refresh.js"></script>
+<script src="../script/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    var id = 0;
+    var auth = 0;
+    apiready = function (){
+      id = api.deviceId;
+      getid();
+      api.showProgress({
+       title: '检索通知',
+       text: '正在刷新',
+       modal: true
+      });
+      api.setRefreshHeaderInfo({
+        bgColor: '#03a9f4',
+        textColor: '#fff',
+        textDown: '下拉刷新...',
+        textUp: '松开刷新...'
+      }, function(ret, err) {
+        window.location.replace("./home.html");
+        api.refreshHeaderLoadDone();
+      });
+      notice();
+      getmessage();
+      api.hideProgress();
+    }
+    function getid() {
+        $.ajax({
+            url: "https://api.littlebear.fun/SG/getid.php",
+            async: false,
+            type: "POST",
+            data: {
+                "deviceid": id
+            },
+            success: function(data) {
+                auth = JSON.parse(data).stat;
+        }
+    })
+  }
+
+
+    function deletemessage(htmldom){
+      if (auth == 0|| auth == null){
+        return 0;
+      }
+      var dialog = new auiDialog({});
+      var dom = $(htmldom);
+      var date = dom.find("#date").text().trim();
+      var message = dom.parent().find("#messagebox").text().trim();
+      dialog.alert({
+               title:"移除提示",
+               msg:message,
+               buttons:['取消','确定']
+           },function(ret){
+               if(ret.buttonIndex == 2){
+                 $.ajax({ //获取消息
+                   url:"https://api.littlebear.fun/SG/getmessage.php",
+                   async: false,
+                   type: "GET",
+                   data:{
+                     'date':date
+                   },
+                   success: function(data){
+                        var stat = JSON.parse(data).status;
+                        if (stat == 'ready'){
+                          dom.parent().remove();
+                        } else {
+                          alert(stat);
+                        }
+                   }
+                 })
+               }
+           })
+    }
+
+    function notice(){
+      var notice = 0;
+      $.ajax({ //获取消息
+        url:"https://api.littlebear.fun/SG/notice.php",
+        async: false,
+        type: "GET",
+        success: function(data){
+          notice = JSON.parse(data).notice;
+        }
+      })
+      messageStr = $("#noticetemp").html();
+      messageStr = del_html_tags(messageStr, "{{notice}}", notice);
+      $("#index").before(messageStr);
+    }
+
+    function del_html_tags(str, reallyDo, replaceWith) {
+      var e = new RegExp(reallyDo, "g");
+      words = str.replace(e, replaceWith);
+      return words;
+    }
+
+    function createmessage(message,groupid,time){
+      if (message == 0 && groupid == 0){
+        return 1;
+      }
+      messageStr = $("#temp").html();
+      messageStr = del_html_tags(messageStr, "{{groupid}}", groupid);
+      messageStr = del_html_tags(messageStr, "{{messagebox}}", message);
+      messageStr = del_html_tags(messageStr, "{{date}}", time);
+      $("#message").append(messageStr);
+    }
+
+    function getmessage(){
+      var update = 0;
+      $.ajax({ //获取消息次数
+        url:"https://api.littlebear.fun/SG/getrow.php",
+        async: false,
+        type: "GET",
+        success: function(data){
+          update = JSON.parse(data).update;
+        }
+      })
+
+      $.ajax({ //获取消息
+        url:"https://api.littlebear.fun/SG/getmessage.php",
+        async: false,
+        type: "GET",
+        success: function(data){
+           //for (i=1;i<=update;i++){
+             var message = JSON.parse(data);
+             for (var key in message){
+               var final = 0;
+               var group = 0;
+               var time = 0;
+               for (var key2 in message[key]){
+                 if (key2 == 'message'){
+                   final = message[key][key2];
+                 }
+                 if (key2 == 'group'){
+                   group = message[key][key2];
+                 }
+                 if (key2 == 'time'){
+                   time = message[key][key2];
+                 }
+               }
+               createmessage(final,group,time);
+             }
+          // }
+        }
+      })
+
+    }
+
+</script>
